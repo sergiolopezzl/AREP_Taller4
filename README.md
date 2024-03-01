@@ -55,18 +55,31 @@ mvn exec:java '-Dexec.mainClass=edu.escuelaing.arem.ASE.app.MovieServer'
 
 ### Pruebas
 * Se realizó la petición a http://localhost:35000/action/hola?nombre=nombre (servicio GET verificado)
+
 ![prueba1.png](src/main/resources/public/img/prueba1.png)
+
 * Se realizó la petición a http://localhost:35000/search.html (buscando avatar verificando el funcionamiento)
+
 ![prueba2.png](src/main/resources/public/img/prueba2.png)
+
 * Se realizó la petición a http://localhost:35000/action/movie?name=avatar (devolviendo el json)
-![prueba3.png](src/main/resources/public/img/prueba3.png) 
+
+![prueba3.png](src/main/resources/public/img/prueba3.png)
+
 * Se realizó la petición a http://localhost:35000/index.html (responde al los archivos html)
+
 ![prueba4.png](src/main/resources/public/img/prueba4.png)
+
 * Se realizó la petición a http://localhost:35000/img/cat.PNG (responde a la imagenes)
+
 ![prueba5.png](src/main/resources/public/img/prueba5.png)
+
 * Se realizó la petición a http://localhost:35000 (verificacion de funcionamiento de excepcion)
+
 ![prueba6.png](src/main/resources/public/img/prueba6.png)
+
 * Pruebas unitarias
+
 ![prueba7.png](src/main/resources/public/img/prueba7.png)
 
 
