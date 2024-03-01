@@ -1,10 +1,10 @@
 package edu.escuelaing.arem.ASE.app.controller;
 
+import java.util.Map;
 import edu.escuelaing.arem.ASE.app.Component;
 import edu.escuelaing.arem.ASE.app.MovieServer;
 import edu.escuelaing.arem.ASE.app.RequestMapping;
 
-import java.util.Map;
 
 /**
  * Clase controladora que maneja las solicitudes relacionadas con el saludo "Hola".

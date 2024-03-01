@@ -1,50 +1,34 @@
 ### Sergio Daniel Lopez Vargas
 # AREP_Taller4
-Este taller3 se crea una funcionalidad similar a Spark que es un servidor HTTP que permite el registro 
-dinámico de servicios GET y POST utilizando funciones lambda para manejar las solicitudes entrantes. 
-Este servidor web también ofrece la capacidad de configurar el directorio de archivos estáticos, 
-lo que permite servir archivos estáticos como HTML, CSS, JavaScript, imágenes, etc. Además, proporciona 
-la capacidad de cambiar dinámicamente el tipo de respuesta a "application/json" según sea necesario.
 
-### Funcionamiento
+## Introducción
 
-1. **SLSpark**:
-  - SLSpark actúa como un enrutador para las solicitudes HTTP entrantes.
-  - Permite registrar manejadores de solicitud para rutas específicas y métodos HTTP.
-  - Cuando llega una solicitud HTTP, SLSpark determina el manejador correspondiente según la ruta y el método HTTP especificados y lo ejecuta.
+En el contexto del desarrollo de aplicaciones web en Java, la reflexión juega un papel fundamental al permitir la creación de frameworks y servidores que pueden analizar y manipular clases en tiempo de ejecución. En este taller, nos enfocaremos en la construcción de un servidor web tipo Apache en Java que sea capaz de servir páginas HTML e imágenes PNG, y que además proporcione un framework IoC (Inversión de Control) para la construcción de aplicaciones web a partir de POJOs (Plain Old Java Objects).
 
-2. **HttpServer**:
-  - HttpServer es responsable de iniciar y ejecutar el servidor HTTP.
-  - Escucha en un puerto específico para las solicitudes entrantes.
-  - Cuando se recibe una solicitud, HttpServer la procesa, determina la acción requerida y envía la respuesta adecuada al cliente.
+La idea principal es desarrollar un prototipo mínimo que demuestre las capacidades reflexivas de Java, permitiendo cargar un bean (POJO) y derivar una aplicación web a partir de él. Este enfoque nos permite entender cómo se puede implementar un servidor web básico que aproveche las capacidades de reflexión para el enrutamiento de solicitudes y la gestión de recursos estáticos y dinámicos.
 
-3. **HttpMovie**:
-  - HttpMovie se encarga de realizar solicitudes HTTP a una API externa de películas para obtener información sobre películas específicas.
-  - Procesa las respuestas de la API y extrae la información relevante sobre las películas solicitadas.
-  - Puede almacenar en caché los datos obtenidos para futuras consultas y evitar realizar solicitudes repetidas a la API externa.
+En la primera versión de nuestro prototipo, cargaremos el POJO desde la línea de comandos, de manera similar al funcionamiento de los frameworks de prueba. Posteriormente, en la versión final, el framework IoC explorará el directorio raíz (o classpath) en busca de clases con una anotación que indique que son componentes, como por ejemplo `@Component`, para cargar todos los componentes disponibles sin necesidad de especificarlos en la línea de comandos.
 
-4. **AppService**:
-  - AppService es una interfaz que define un contrato para las clases que manejan las solicitudes de la aplicación.
-  - Define un método que debe ser implementado por las clases que manejan las solicitudes de la aplicación.
-  - Permite una implementación flexible de los servicios de la aplicación, lo que facilita la modularidad y la extensibilidad del sistema.
+## Características y Funcionalidades:
 
-Este servidor web interactúa con una API externa para obtener información sobre películas.
-Utiliza una clase llamada HttpMovie para realizar solicitudes HTTP a la API de películas y procesar
-las respuestas recibidas. Esta clase gestiona la comunicación con la API, extrae la información
-relevante sobre las películas solicitadas y puede almacenar en caché los datos obtenidos para evitar
-solicitudes repetidas a la API externa.
+1. **Servidor Web Mínimo**: El servidor web puede manejar solicitudes HTTP básicas.
+2. **Servicio de Archivos Estáticos**: Sirve archivos estáticos (como HTML, CSS, imágenes) desde un directorio predeterminado.
+3. **Procesamiento de Solicitudes Dinámicas**: Procesa solicitudes que involucran componentes marcados con `@Component` y métodos marcados con `@RequestMapping`.
+4. **Gestión de Parámetros de Solicitud**: Analiza y maneja parámetros de solicitud HTTP.
+5. **Encabezados HTTP**: Construye encabezados HTTP apropiados para las respuestas del servidor.
 
-### Instrucciones de Ejecución
+
+## Instrucciones de Ejecución
 * Clone el repositorio desde GitHub:
 
 ```
-git clone https://github.com/sergiolopezzl/AREP_Taller3.git
+git clone https://github.com/sergiolopezzl/AREP_Taller4.git
 ```
 
 * Navegue al directorio del proyecto: 
 
 ```
-cd AREP_Taller3
+cd AREP_Taller4
 ```
 
 * Compile el proyecto y descargue las dependencias con Maven: 
@@ -56,29 +40,36 @@ mvn clean package
 * Ejecute el servidor utilizando el siguiente comando: 
 
 ```
-mvn exec:java '-Dexec.mainClass=edu.escuelaing.arem.ASE.app.App'
+mvn exec:java '-Dexec.mainClass=edu.escuelaing.arem.ASE.app.MovieServer'
 ```
+## Arquitectura
 
-Una vez que el servidor esté en funcionamiento, acceda a 
-http://localhost:35000/search.html desde su navegador para comenzar a buscar películas.
+1. **Escaneo de Componentes**: Utiliza la librería `Reflections` para escanear clases y encontrar métodos anotados con `@Component` y `@RequestMapping`.
+2. **Inicio del Servidor**: El servidor inicia en el puerto 35000 y espera conexiones entrantes.
+3. **Manejo de Solicitudes**: Cada solicitud HTTP entrante se maneja en un hilo separado.
+4. **Enrutamiento de Solicitudes**: Examina la URI de la solicitud para determinar si se trata de una solicitud de archivo estático o una solicitud dinámica para un componente.
+5. **Procesamiento de Solicitudes Dinámicas**: Invoca los métodos correspondientes basados en la URI de la solicitud y los parámetros proporcionados.
+6. **Respuestas HTTP**: Construye respuestas HTTP apropiadas según el tipo de solicitud y contenido.
+
+## Ejemplo de desarrollo
 
 ### Pruebas
-* Se realizó la petición a http://localhost:35000/index.html
+* Se realizó la petición a http://localhost:35000/action/hola?nombre=nombre (servicio GET verificado)
 ![prueba1.png](src/main/resources/public/img/prueba1.png)
-* Se realizó la petición a http://localhost:35000/search.html
+* Se realizó la petición a http://localhost:35000/search.html (buscando avatar verificando el funcionamiento)
 ![prueba2.png](src/main/resources/public/img/prueba2.png)
-* Se realizó la petición a http://localhost:35000/cat.png
-![prueba3.png](src/main/resources/public/img/prueba3.png)
-* Se realizó la petición a http://localhost:35000/search.html y se busco Halo
+* Se realizó la petición a http://localhost:35000/action/movie?name=avatar (devolviendo el json)
+![prueba3.png](src/main/resources/public/img/prueba3.png) 
+* Se realizó la petición a http://localhost:35000/index.html (responde al los archivos html)
 ![prueba4.png](src/main/resources/public/img/prueba4.png)
-* Aca se puede observar como se obteniene el GET
+* Se realizó la petición a http://localhost:35000/img/cat.PNG (responde a la imagenes)
 ![prueba5.png](src/main/resources/public/img/prueba5.png)
+* Se realizó la petición a http://localhost:35000 (verificacion de funcionamiento de excepcion)
+![prueba6.png](src/main/resources/public/img/prueba6.png)
 
-### Diseño y Extensibilidad
 
-La modularidad y la flexibilidad están integradas en el sistema a través de varias clases y componentes,
-como HttpServer, SLSpark y AppService. Estas clases permiten construir un sistema que puede manejar
-eficientemente las solicitudes HTTP entrantes, interactuar con servicios externos y proporcionar respuestas
-adecuadas a los clientes que realizan las solicitudes. La arquitectura modular facilita la extensibilidad
-y escalabilidad del sistema, lo que permite agregar nuevas funcionalidades y adaptarse a los cambios en
-los requisitos con relativa facilidad.
+
+
+
+
+
